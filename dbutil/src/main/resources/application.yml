@@ -1,0 +1,6 @@
+TableSchema: claim_core
+
+spring:
+  datasource:
+      url: jdbc:mysql://localhost/claim_core?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+      username: root
