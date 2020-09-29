@@ -1,5 +1,8 @@
 TableSchema: claim_core
 
+mybatis:
+  mapperLocations: classpath*:mapper/**/*Dao.xml
+  executor-type: REUSE
 spring:
   datasource:
       url: jdbc:mysql://localhost/claim_core?characterEncoding=utf8&useSSL=false&serverTimezone=UTC

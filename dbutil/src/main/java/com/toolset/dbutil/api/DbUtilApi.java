@@ -35,6 +35,17 @@ public class DbUtilApi {
     }
 
     /**
+     * 导出mysql-sql执行计划并提供建议
+     * @param sql
+     * @param resp
+     */
+    @RequestMapping("/exportSqlAnalyse")
+    @ResponseBody
+    public void exportSqlAnalyse(String sql,HttpServletResponse resp) {
+        mysqlService.exportSqlAnalyse(sql,resp);
+    }
+
+    /**
      * 导出oracle数据库的表结构
      * @param resp
      */

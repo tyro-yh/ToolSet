@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toolset.dbutil.mysql.dao.MysqlDao">
+    <select id="getExplain" parameterType="String" resultType="com.toolset.dbutil.mysql.entity.Explain">
+        EXPLAIN (${sql})
+    </select>
+</mapper>

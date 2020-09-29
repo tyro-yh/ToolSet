@@ -1,7 +1,9 @@
 package com.toolset.dbutil.mysql.dao;
 
+import com.toolset.dbutil.mysql.entity.Explain;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -29,4 +31,11 @@ public interface MysqlDao {
      */
     @Select("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA =#{tableSchema} AND TABLE_NAME =#{tableName}")
     List<Map> getAllColumnForTable(@Param("tableSchema")String tableSchema,@Param("tableName")String tableName);
+
+    /**
+     * 获取sql的执行计划
+     * @param sql
+     * @return
+     */
+    List<Explain> getExplain(@Param("sql")String sql);
 }
