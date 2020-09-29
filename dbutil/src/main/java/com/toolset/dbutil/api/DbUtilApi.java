@@ -1,7 +1,7 @@
-package com.myutil.dbutil.api;
+package com.toolset.dbutil.api;
 
-import com.myutil.dbutil.mysql.service.MysqlService;
-import com.myutil.dbutil.oracle.service.OracleService;
+import com.toolset.dbutil.mysql.service.MysqlService;
+import com.toolset.dbutil.oracle.service.OracleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author yh
  */
 @Controller
-public class DbHelperApi {
+public class DbUtilApi {
     private MysqlService mysqlService;
     private OracleService oracleService;
 
     @Autowired
-    public DbHelperApi(MysqlService mysqlService,OracleService oracleService) {
+    public DbUtilApi(MysqlService mysqlService,OracleService oracleService) {
         this.mysqlService = mysqlService;
         this.oracleService = oracleService;
     }

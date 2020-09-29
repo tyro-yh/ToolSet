@@ -1,4 +1,4 @@
-package com.myutil.dbutil.oracle.dao;
+package com.toolset.dbutil.oracle.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

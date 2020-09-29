@@ -1,4 +1,4 @@
-package com.myutil.dbutil.mysql.dao;
+package com.toolset.dbutil.mysql.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
