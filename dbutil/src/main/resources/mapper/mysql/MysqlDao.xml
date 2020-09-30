@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.toolset.dbutil.mysql.dao.MysqlDao">
-    <select id="getExplain" parameterType="String" resultType="com.toolset.dbutil.mysql.entity.Explain">
+    <resultMap id="Explain" type="com.toolset.dbutil.mysql.entity.Explain">
+        <id column="id" property="id"/>
+        <result column="select_type" property="selectType"/>
+        <result column="table" property="table"/>
+        <result column="table" property="type"/>
+        <result column="possible_keys" property="possibleKeys"/>
+        <result column="key" property="key"/>
+        <result column="rows" property="rows"/>
+        <result column="Extra" property="extra"/>
+    </resultMap>
+
+    <select id="getExplain" parameterType="String" resultMap="Explain">
         EXPLAIN (${sql})
     </select>
 </mapper>

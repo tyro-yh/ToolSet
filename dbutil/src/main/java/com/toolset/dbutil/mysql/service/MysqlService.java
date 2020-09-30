@@ -14,6 +14,8 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -110,49 +112,25 @@ public class MysqlService {
         }
         Workbook workbook = new HSSFWorkbook();
         String fileName = "SQL执行计划过程";
-        CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setBorderTop(BorderStyle.THIN);
-        cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setBorderRight(BorderStyle.THIN);
-        cellStyle.setBorderBottom(BorderStyle.THIN);
-        cellStyle.setWrapText(true);
-        CellStyle headCellStyle = workbook.createCellStyle();
-        headCellStyle.setBorderTop(BorderStyle.THIN);
-        headCellStyle.setBorderLeft(BorderStyle.THIN);
-        headCellStyle.setBorderRight(BorderStyle.THIN);
-        headCellStyle.setBorderBottom(BorderStyle.THIN);
-        headCellStyle.setWrapText(true);
-        headCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-        headCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        CellStyle cellStyle = PoiUtil.createCellStyle(workbook);
+        CellStyle headCellStyle = PoiUtil.createHeadCellStyle(workbook);
         try {
             Sheet sheet = workbook.createSheet("执行计划");
             Row row0 = sheet.createRow(0);
-            Map<Integer, Integer> maxWidths = new HashMap<Integer, Integer>(5) {{
-                put(0, 15000);
-                put(1, 15000);
-                put(2, 15000);
-                put(3, 15000);
-                put(4, 15000);
-                put(5, 15000);
-                put(6, 15000);
-                put(7, 15000);
-                put(8, 15000);
+            Map<Integer, Integer> maxWidths = new HashMap<Integer, Integer>(9) {{
+                put(0, 15000);put(1, 15000);put(2, 15000);
+                put(3, 15000);put(4, 15000);put(5, 15000);
+                put(6, 15000);put(7, 15000);put(8, 15000);
             }};
-            List<String> NAME_LIST = new ArrayList<String>(9) {{
-                add("id");
-                add("select_type");
-                add("table");
-                add("type");
-                add("possible_keys");
-                add("key");
-                add("rows");
-                add("Extra");
-                add("备注");
+            List<String> nameList = new ArrayList<String>(9) {{
+                add("id");add("select_type");add("table");
+                add("type");add("possible_keys");add("key");
+                add("rows");add("Extra");add("备注");
             }};
             //创建表头
-            for (int i = 0; i < NAME_LIST.size(); i++) {
+            for (int i = 0; i < nameList.size(); i++) {
                 Cell cell = row0.createCell(i);
-                cell.setCellValue(NAME_LIST.get(i));
+                cell.setCellValue(nameList.get(i));
                 cell.setCellStyle(headCellStyle);
                 int cellLen = cell.getStringCellValue().getBytes().length * 256 + 200;
                 maxWidths.put(i, cellLen);
@@ -163,30 +141,13 @@ public class MysqlService {
                 i++;
                 Row row = sheet.createRow(i);
                 List<Cell> cells = new ArrayList<>();
-                Cell cell0 = row.createCell(0);
-                cell0.setCellValue(explain.getId());
-                cells.add(cell0);
-                Cell cell1 = row.createCell(1);
-                cell1.setCellValue(explain.getSelect_type());
-                cells.add(cell1);
-                Cell cell2 = row.createCell(2);
-                cell2.setCellValue(explain.getTable());
-                cells.add(cell2);
-                Cell cell3 = row.createCell(3);
-                cell3.setCellValue(explain.getType());
-                cells.add(cell3);
-                Cell cell4 = row.createCell(4);
-                cell4.setCellValue(explain.getPossible_keys());
-                cells.add(cell4);
-                Cell cell5 = row.createCell(5);
-                cell5.setCellValue(explain.getKey());
-                cells.add(cell5);
-                Cell cell6 = row.createCell(6);
-                cell6.setCellValue(explain.getRows());
-                cells.add(cell6);
-                Cell cell7 = row.createCell(7);
-                cell7.setCellValue(explain.getExtra());
-                cells.add(cell7);
+                int j = 0;
+                for (Field field : explain.getClass().getDeclaredFields()) {
+                    Method m = explain.getClass().getMethod("get"+field.getName().substring(0,1).toUpperCase()+field.getName().substring(1));
+                    Cell cellj = row.createCell(j);
+                    cellj.setCellValue(m.invoke(explain).toString());
+                    cells.add(cellj);
+                }
                 StringBuffer text = sqlAnalyseHandler(explain);
                 if (!StringUtils.isEmpty(text)) {
                     Cell cell8 = row.createCell(8);
@@ -226,7 +187,7 @@ public class MysqlService {
         if (WarnExplain.index.getCode().equals(explain.getType())) {
             text.append(WarnExplain.ALL.getMessage());
         }
-        if (StringUtils.isEmpty(explain.getPossible_keys())) {
+        if (StringUtils.isEmpty(explain.getPossibleKeys())) {
             text.append("T1-条件列没有相关索引 建议优化\n");
         }
         if (!StringUtils.isEmpty(explain.getExtra())) {
