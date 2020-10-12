@@ -185,7 +185,7 @@ public class MysqlService {
             text.append(WarnExplain.ALL.getMessage());
         }
         if (WarnExplain.index.getCode().equals(explain.getType())) {
-            text.append(WarnExplain.ALL.getMessage());
+            text.append(WarnExplain.index.getMessage());
         }
         if (StringUtils.isEmpty(explain.getPossibleKeys())) {
             text.append("T1-条件列没有相关索引 建议优化\n");
