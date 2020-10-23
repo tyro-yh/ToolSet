@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.batchtask.manage.dao.BatchTaskDao">
+    <insert id="addTask" parameterType="com.batchtask.manage.entity.BatchTask">
+        INSERT INTO `batch_task`(`taskKey`, `taskType`, `taskData`, `createTime`, `startTime`, `endTime`, `nextExecTime`, `dependentTaskKeys`, `partnerCode`)
+        VALUES (#{taskKey}, #{taskType}, #{taskData}, NOW(), #{startTime}, #{endTime}, #{nextExecTime}, #{dependentTaskKeys}, #{partnerCode});
+    </insert>
+
+    <update id="updateTask" parameterType="com.batchtask.manage.entity.BatchTask">
+        UPDATE batch_task
+        <set>
+            <if test="status != null">
+                `status`=#{status},
+            </if>
+            <if test="resultData != null">
+                resultData=#{resultData},
+            </if>
+            <if test="executeTimes != null">
+                executeTimes=#{executeTimes},
+            </if>
+            <if test="executorIp != null">
+                executorIp=#{executorIp},
+            </if>
+            <if test="nextExecTime != null">
+                nextExecTime=#{nextExecTime},
+            </if>
+        </set>
+        WHERE taskkey = #{taskKey}
+    </update>
+
+    <update id="archiveTasks" parameterType="String">
+        INSERT INTO batch_task_archive (`taskKey`, `taskType`, `taskData`, `status`, `createTime`,
+        `startTime`, `endTime`, `resultData`, `executorIP`, `executeTimes`,
+        `nextExecTime`, `dependentTaskKeys`, `partnerCode`)
+        SELECT `taskKey`, `taskType`, `taskData`, `status`, `createTime`,
+        `startTime`, `endTime`, `resultData`, `executorIP`, `executeTimes`,
+        `nextExecTime`, `dependentTaskKeys`, `partnerCode`
+        FROM batch_task WHERE taskKey = #{taskKey}
+    </update>
+
+    <delete id="deleteTasks" parameterType="String">
+        DELETE FROM batch_task WHERE taskkey = #{taskKey}
+    </delete>
+
+    <select id="queryPendingTasksByTaskKeys" parameterType="String" resultType="Long">
+        select count(*) from batch_task
+        <where>
+            status IN ('1','4')
+            <if test="taskKeys != null and taskKeys.length > 0">
+                AND taskKey
+                <foreach collection="taskKeys" item="key" separator="," open="in (" close=")">
+                    #{key}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="queryTaskByTaskKey" parameterType="String" resultType="Long">
+        SELECT SUM(a.cnum) FROM (
+            SELECT COUNT(1) AS cnum FROM batch_task WHERE taskKey = #{taskKey}
+            UNION ALL
+            SELECT COUNT(1) AS cnum FROM batch_task_archive WHERE taskKey = #{taskKey}
+        ) a
+    </select>
+
+    <select id="queryStatusByTaskKey" parameterType="String" resultType="String">
+        SELECT status FROM batch_task WHERE taskKey = #{taskKey}
+    </select>
+
+    <update id="lockTask" parameterType="String">
+        UPDATE batch_task SET status = '2' WHERE taskKey = #{taskKey}
+    </update>
+</mapper>
