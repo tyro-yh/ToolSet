@@ -142,7 +142,7 @@ public class RedisUtil {
      * @return 对应的value
      */
     public String get(final String key) {
-        Object result = null;
+        Object result;
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         result = operations.get(key);
         if(result==null){

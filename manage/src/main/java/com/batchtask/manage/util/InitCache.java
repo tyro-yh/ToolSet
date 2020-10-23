@@ -10,12 +10,12 @@ import java.util.Map;
 
 /**
  * 初始化加载配置
- * @author
+ * @author yh
  */
 @Component
 public class InitCache implements ApplicationRunner {
 
-    private RedisUtil redisUtil;
+    private final RedisUtil redisUtil;
 
     @Autowired
     public  InitCache(RedisUtil redisUtil) {
@@ -23,12 +23,12 @@ public class InitCache implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         //todo 获取需要加载的配置 可以从数据库读取或者走配置文件
-        Map<String,String> map = new HashMap(1);
+        Map<String,String> map = new HashMap<>(1);
         map.put("test","1");
         redisUtil.set(map);
         String value = redisUtil.get("test");
-        System.out.printf("缓存："+value);
+        System.out.print("缓存："+value);
     }
 }

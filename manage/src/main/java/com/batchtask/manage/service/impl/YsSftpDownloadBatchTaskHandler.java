@@ -20,7 +20,7 @@ public class YsSftpDownloadBatchTaskHandler implements IBatchTaskHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private BatchTaskManager batchTaskManager;
+    private final BatchTaskManager batchTaskManager;
 
     @Autowired
     public YsSftpDownloadBatchTaskHandler(BatchTaskManager batchTaskManager) {

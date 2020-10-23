@@ -10,8 +10,8 @@ import com.batchtask.manage.entity.BatchTaskResult;
 public interface IBatchTaskHandler {
     /**
      * 实现任务执行具体逻辑
-     * @param task
-     * @return
+     * @param task 任务数据模型
+     * @return 任务执行结果
      */
-    public BatchTaskResult handle(BatchTask task);
+    BatchTaskResult handle(BatchTask task);
 }
